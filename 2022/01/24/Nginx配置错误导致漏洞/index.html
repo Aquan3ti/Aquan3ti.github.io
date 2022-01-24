@@ -4,11 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Nginx文件名逻辑漏洞|CVE_2013_4547, Hexo">
-    <meta name="description" content="CVE-2013-4547 Nginx解析漏洞参考链接
-Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
-漏洞复现之CVE-2013-4547_Blood_Pupil的博客-CSDN博客
-文件解析">
+    <meta name="keywords" content="Nginx配置错误导致漏洞, Hexo">
+    <meta name="description" content="Nginx简介1、 什么是NginxNingx(engine x)是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。其将源代码以类BSD许可证的形式发布，因它的稳定性、丰富的功能集、示例配置文件和低">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -20,7 +17,7 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Nginx文件名逻辑漏洞|CVE_2013_4547 | Hexo</title>
+    <title>Nginx配置错误导致漏洞 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -312,12 +309,12 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Nginx文件名逻辑漏洞|CVE_2013_4547</h1>
+                    <h1 class="description center-align post-title">Nginx配置错误导致漏洞</h1>
                 </div>
             </div>
         </div>
@@ -462,7 +459,7 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2022-01-18
+                    2022-01-24
                 </div>
                 
 
@@ -483,62 +480,74 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="CVE-2013-4547-Nginx解析漏洞"><a href="#CVE-2013-4547-Nginx解析漏洞" class="headerlink" title="CVE-2013-4547 Nginx解析漏洞"></a>CVE-2013-4547 Nginx解析漏洞</h3><p><em>参考链接</em></p>
-<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/284531.html">Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Blood_Pupil/article/details/88565176">漏洞复现之CVE-2013-4547_Blood_Pupil的博客-CSDN博客</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.werner.wiki/file-resolution-vulnerability-nginx/">文件解析漏洞总结-Nginx | 若水斋 (werner.wiki)</a></p>
-<p>[CVE-2013-4547 Nginx解析漏洞深入利用及分析 - 百度安全中心 (wooyun.js.org)](<a target="_blank" rel="noopener" href="https://wooyun.js.org/drops/CVE-2013-4547">https://wooyun.js.org/drops/CVE-2013-4547</a> Nginx解析漏洞深入利用及分析.html)</p>
-<h4 id="1、Nginx简介"><a href="#1、Nginx简介" class="headerlink" title="1、Nginx简介"></a>1、Nginx简介</h4><p>Nginx是一款轻量级的web服务器/反向代理服务器及电子邮件服务器，特点是占用内存小，并发能力强</p>
-<h4 id="2、影响版本"><a href="#2、影响版本" class="headerlink" title="2、影响版本"></a>2、影响版本</h4><p>Nginx 0.8.41 ~ 1.4.3 / 1.5.0 ~ 1.5.7</p>
-<h4 id="3、漏洞原理"><a href="#3、漏洞原理" class="headerlink" title="3、漏洞原理"></a>3、漏洞原理</h4><p>CGI：是一种协议，定义了web服务器传递的数据格式。</p>
-<p>FastCGI：优化版的CGI程序</p>
-<p>PHP-CGI：PHP解释器，能够对PHP文件进行解析并返回相应的解析结果</p>
-<p>PHP-FPM：FastCGI进程管理程序</p>
-<p>当Nginx得到一个用户请求时，首先对url进行解析，进行正则匹配，如果匹配到以.php后缀结尾的文件名，会将请求的PHP文件交给PHP-CGI去解析。其中处理模块如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">location ~ \.php$ &#123;</span><br><span class="line">    root           html;</span><br><span class="line">    include        fastcgi_params;</span><br><span class="line"></span><br><span class="line">    fastcgi_pass   IP:9000;</span><br><span class="line">    fastcgi_index  index.php;</span><br><span class="line">    fastcgi_param  SCRIPT_FILENAME  /var/www/html$fastcgi_script_name;</span><br><span class="line">    fastcgi_param  DOCUMENT_ROOT /var/www/html;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                <h3 id="Nginx简介"><a href="#Nginx简介" class="headerlink" title="Nginx简介"></a>Nginx简介</h3><h4 id="1、-什么是Nginx"><a href="#1、-什么是Nginx" class="headerlink" title="1、 什么是Nginx"></a>1、 什么是Nginx</h4><p>Ningx(engine x)是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。其将源代码以类BSD许可证的形式发布，因它的稳定性、丰富的功能集、示例配置文件和低系统资源的消耗而闻名。</p>
+<p>Nginx是一款轻量级的Web 服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，nginx的并发能力在同类型的网页服务器中表现较好。</p>
+<h4 id="2、-Nginx的特点"><a href="#2、-Nginx的特点" class="headerlink" title="2、 Nginx的特点"></a>2、 Nginx的特点</h4><p>1、跨平台：Nginx 可以在大多数 Unix Linux OS 上编译运行，并有 Windows 移植版。</p>
+<p>2、支持高并发：Nginx 是一个很强大的高性能Web和反向代理服务，可以支持高达 50,000 个并发连接数的响应。</p>
+<p>3、内存低：Nginx采用C语言进行编写，系统资源开销还是CPU使用效率都比 Perlbal 要好很多。</p>
+<p>4、负载均衡和HTTP服务器：Nginx作为负载均衡服务：Nginx 既可以在内部直接支持 Rails 和 PHP 程序对外进行服务，也可以支持作为 HTTP代理服务对外进行服务。实现无缓存的反向代理加速，简单的负载均衡和容错。</p>
+<p>5、稳定性高：用于反向代理，宕机的概率微乎其微。 等等…</p>
+<h4 id="3、-Nginx用来做什么"><a href="#3、-Nginx用来做什么" class="headerlink" title="3、 Nginx用来做什么"></a>3、 Nginx用来做什么</h4><p>1、静态HTTP服务</p>
+<p>首先，Nginx是一个HTTP服务器，可以将服务器上的静态文件（如HTML、图片）通过http协议展示给客服端。</p>
+<p>Nginx相较于Apache\lighttpd具有占有内存少。稳定性高等优势，而且依靠并发能力强。丰富的模块库以及友好灵活的配置而闻名。</p>
+<p>Nginx本身也是一个静态资源的服务器，当只有静态资源的时候，就可以使用Nginx来做服务器，同时现在也很流行动静分离，就可以通过Nginx来实现，动静分离是让动态网页很久一定规则吧不变得资源和经常变得资源区分开来，动静资源做好拆分之后，我们就可以根据静态资源的特点将其作缓存操作，这就是网站静态化处理的核心思路。</p>
+<p>2、代理服务器</p>
+<p><strong>1）关于代理</strong></p>
+<p>说到代理，我们首先明确一个概念，所谓代理就是一个渠道、一个通道。</p>
+<p>就像我们去店里买鞋，分为客户、专卖店、鞋厂，我们需要鞋子的时候，如果直接去鞋厂买一定行不通的，我们需要去专卖店买，店里的鞋是鞋厂做的。客户对应客户端、专卖店对应代理、鞋厂对应服务端，客户端无法直接想服务端通信，代理可以向服务端通信，客户端向代理请求，代理将客户端的请求转发给服务端，实现客户端和服务器的通信。代理位于客户端与服务端之间，扮演“中间人”的角色。</p>
+<p><strong>2）正向代理</strong></p>
+<p>正向代理是一个位于客户端和服务端之间。使用它，客户端不是直接到服务端请求数据，而是向地理服务器发送请求，请求先送到代理服务器，有代理服务器转发给服务端，数据返回也是如此。</p>
+<p><strong>3）反向代理</strong></p>
+<p>在服务端结束客服端的请求，然后发请求分发给具体的服务器进行处理，然后再将服务器的响应结果反馈给客户端，Nginx就是其中的一个反向代理软件。正向代理，客户端必须设置正向代理服务器的IP地址和代理程序的端口，而反向代理正好与正向代理相反，对于客户端而言代理服务器就像服务端，并且客户端不需要进行任何特别设置。客户端向反向代理的命令空间中的内容发送普通请求，接着反向代理将判断向何处的服务端转交请求，并将获得的内容返回给客户端。</p>
+<p>3、负载均衡</p>
+<p>当网站访问量非常大的时候，需要将同一应用部署在多台服务器上，将大量用户的请求分配给多台机器处理。同时带来的好处是，其中一台服务器万一挂了，只要还有其他的服务器正常运行，就不会影响用户使用。</p>
+<p>Nginx可以通过反向代理来实现负载均衡</p>
+<p>负载均衡的意思就是分摊到多个操作单元上进行执行，例如：web服务器，FTP服务器等其他关键任务的服务器。从而共同完成工作任务，简单而言就是当有2台或以上服务器时，根据规则将请求分发到不同服务器处理，负载均衡配置一般都需要同时配置反向代理，通过反向代理跳转到负载均衡，而Nginx目前支持自带3种负载均衡策略，还有2种常用的第三方策略。</p>
+<p>4、虚拟主机</p>
+<p>有些网站访问量太小时，为了节约成本，将多个网站不符在同一台服务器上，例如将<a target="_blank" rel="noopener" href="http://www.123.com和www.456.com两个网站部署在同一台服务器上,两个域名解析到同一个ip地址,但用户通过两个域名打开两个完全不同的网站,互不影响,就像访问两个服务器一样,所以叫虚拟主机./">www.123.com和www.456.com两个网站部署在同一台服务器上，两个域名解析到同一个IP地址，但用户通过两个域名打开两个完全不同的网站，互不影响，就像访问两个服务器一样，所以叫虚拟主机。</a></p>
+<h3 id="Nginx-配置错误导致漏洞"><a href="#Nginx-配置错误导致漏洞" class="headerlink" title="Nginx 配置错误导致漏洞"></a>Nginx 配置错误导致漏洞</h3><h4 id="CRLF注入漏洞"><a href="#CRLF注入漏洞" class="headerlink" title="CRLF注入漏洞"></a>CRLF注入漏洞</h4><h5 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/271542.html">服务攻防-Nginx中间件漏洞原理深究及复现方法 - FreeBuf网络安全行业门户</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/nginx-insecure-configuration.html">三个案例看Nginx配置安全 | 离别歌 (leavesongs.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/422198990">彻底搞懂 HTTP 3XX 重定向状态码和浏览器重定向 - 知乎 (zhihu.com)</a></p>
+<h5 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h5><p>CRLF是“回车+换行”（\r\n)的检查，其十六进制编码分别为0x0d和0x0a。在HTTP协议中，HTTP header与HTTP Body是用两个CRLF分隔的，浏览器就是根据这两个CRLF来取出HTTP内容显示出来。所以，一旦我们能够控制HTTP消息头中的字符，注入一些恶意的换行，这样我们就能注入一些回话Cookie或者HTML代码。CRLF漏洞常出现在Location与Set-cookie消息头中。</p>
+<p>在nginx.conf中，在location位置添加配置，当用户访问nginx服务器时此配置实现强制跳转到https协议访问之前访问的链接。</p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124115101466.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">	return 302 https://$host$uri;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>以.php结尾的文件都会交给该模块处理，其中fastcgi_pass就是Nginx与PHP-FPM之间的媒介，通过ip+port的方式将请求转发给PHP解释器</p>
-<p><strong>CVE-2013-4547漏洞</strong>是由于非法字符空格和截止符导致Nginx在解析URL时的有限状态机混乱，导致攻击者可以通过一个非编码空格绕过后缀名限制。假设服务器中存在文件‘123.png ‘，则可以通过访问如下网址让服务器认为’123.png ‘的后缀为php</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.146.1/123.png \0.php</span><br></pre></td></tr></table></figure>
+<p>上面的配置的关键利用点有两个：</p>
+<p>1、配置中$uri是我们可以控制的，这样我们就可以在$uri处填入CRLF，然后对服务器进行访问实现头部注入。</p>
+<p>2、服务器返回一个302跳转给用户，所以我们注入的头部参数又会返回到客户这里。</p>
+<h5 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h5><p>1、 开启Python3自带的HttpServer服务，监听80端口。修改error1.conf将https改为http，从而重定向到Python3的http服务。</p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124141218401.png"></p>
+<p>2、开启Burp后，访问<a href="http://127.0.0.1:8080。添加%0ASet-cookie:JSPSESSID%3D1234，可以看到返回的页面数据包头部携带我们添加的字段">http://127.0.0.1:8080。添加%0ASet-cookie:JSPSESSID%3D1234，可以看到返回的页面数据包头部携带我们添加的字段</a></p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124141732657.png"></p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124142109137.png"></p>
+<h5 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h5><p>如何修复这个CRLF漏洞？正确的做法应该是如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">    return 302 https://$host$request_uri;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>从代码层面来说，我们请求的url中123.png[0x20][0x00].php正好与location模块中的.php相匹配，但进入该模块后Nginx确认为请求的文件名是’123.png ‘，就设置其为script_name的值交给CGI进行解析，最终造成解析漏洞。</p>
-<p><strong>以vulhub提供的漏洞环境为例</strong></p>
-<p>1、前端页面存在上传，且不能传后缀名为php这类的文件，那么我们把文件后缀名改为jpg，然后上传</p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220119163114591.png"></p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220119163220173.png"></p>
-<p>2、目前的情况看来我们不能传后缀名为<strong>php</strong>这一类的文件，那么我们就把文件后缀名改为<strong>jpg</strong>吧，然后上传</p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122104402704.png"></p>
-<p>我们尝试访问下</p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122104256774.png"></p>
-<p>3、后缀为jpg文件可以成功上传，但是jpg里的命令不能执行，我们得想办法执行命令。因为nginx把所有后缀名为php的文件交给fastcgi处理，我们尝试把文件名改为abc.jpg.php然后访问下，看看有什么效果</p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122104803960.png"></p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122105423823.png"></p>
-<p>上述响应信息说明，上传文件时nginx已经把abc.jpg.php交给fastcgi处理了但是在index.php文件中发现后缀名为.php扩展名不支持。我们接下来使用零截断试试，这样nginx同样会把abc.jpg[00].php交给fastcgi，在fastcgi里截断然后文件就可以变成abc.jpg导致不会被后缀名检测识别，下边看一下结果：</p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122110257192.png"></p>
-<img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122110357642.png" alt style="zoom:200%;">
+<h4 id="目录穿越漏洞"><a href="#目录穿越漏洞" class="headerlink" title="目录穿越漏洞"></a>目录穿越漏洞</h4><h5 id="参考文章-1"><a href="#参考文章-1" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="http://blog.o3ev.cn/index.php/archives/671/#menu_index_22">Nginx的几个常见漏洞 - o3Ev’s blog</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.licess.com/nginx-autoindex/">Nginx打开目录浏览功能(autoindex) - Licess’s Blog</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.icode9.com/content-3-375512.html">nginx 文件路径配置(root|alias) (icode9.com)</a></p>
+<p>Nginx的目录遍历与Apache一样，属于配置方面的问题，错误的配置可能导致目录遍历与源代码泄露。</p>
+<h5 id="漏洞原理-1"><a href="#漏洞原理-1" class="headerlink" title="漏洞原理"></a>漏洞原理</h5><p>Nginx在做反向代理时，通常需要处理静态文件，现在假设静态文件在<code>/home/</code>目录下，而这个目录在url中的名字是<code>/files</code>，那么就需要通过alias来设置目录别名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location /files &#123;</span><br><span class="line">    alias /home/;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>看一下响应好像并没有我们想象中那样，响应信息什么也没有！通过调试我们可以发现nginx发现文件名中存在\0截断符时会返回错误信息代码如下所示，这也就是为什么我们上面没有接收到任何的响应信息原因：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">case &#x27;\0&#x27;:</span><br><span class="line">	return NGX_HTTP_PARSE_INVALID_REQUEST;</span><br></pre></td></tr></table></figure>
+<p>现在访问<code>/files/help.txt</code>就相当于是访问<code>/home/help.txt</code>，但这样其实是有危险的，因为在上面设置别名的时候，files后面并没有添加<code>/</code>，所以如果访问<code>/file../</code>就相当于是<code>/home/../</code>，从而造成目录穿越漏洞</p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124151141340.png"></p>
+<h5 id="利用方式-1"><a href="#利用方式-1" class="headerlink" title="利用方式"></a>利用方式</h5><p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124151257961.png"></p>
+<h5 id="漏洞修复-1"><a href="#漏洞修复-1" class="headerlink" title="漏洞修复"></a>漏洞修复</h5><p>1、在files后面加上<code>/</code>，或者去掉home后的<code>/</code>即可</p>
+<p>2、autoindex off</p>
+<h4 id="add-header被覆盖"><a href="#add-header被覆盖" class="headerlink" title="add_header被覆盖"></a>add_header被覆盖</h4><h5 id="参考文章-2"><a href="#参考文章-2" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/nginx-insecure-configuration.html">三个案例看Nginx配置安全 | 离别歌 (leavesongs.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37943295/article/details/79978761?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0.pc_relevant_default&spm=1001.2101.3001.4242.1&utm_relevant_index=3">内容安全策略（CSP）详解_柱哥的博客-CSDN博客_csp策略</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/jt102605/article/details/86630730">http协议＿CSP(Content-Security-Policy 内容安全策略)_coding-CSDN博客_csp协议</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42728957/article/details/89357550">X-Frame-Options(点击劫持)_橘子就酱的博客-CSDN博客_x-frame-options</a></p>
+<h5 id="漏洞原理-2"><a href="#漏洞原理-2" class="headerlink" title="漏洞原理"></a>漏洞原理</h5><p>众所周知，Nginx的配置文件分为Server、Location、If等一些配置块，并且存在包含关系，和编程语言比较类似。如果在外层配置的一些选项，是可以被继承到内层的。</p>
+<p>但这里的继承也有一些特性，比如add_header，子块中配置后将会覆盖父块中的add_header添加的<strong>所有</strong>HTTP头，造成一些安全隐患。</p>
+<h5 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h5><p>如下列代码，Server块添加了CSP头：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    ...</span><br><span class="line">    add_header Content-Security-Policy &quot;default-src &#x27;self&#x27;&quot;;</span><br><span class="line">    add_header X-Frame-Options DENY;</span><br><span class="line"></span><br><span class="line">    location = /test1 &#123;</span><br><span class="line">        rewrite ^(.*)$ /xss.html break;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location = /test2 &#123;</span><br><span class="line">        add_header X-Content-Type-Options nosniff;</span><br><span class="line">        rewrite ^(.*)$ /xss.html break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>此时出现了漏洞存在的关键点，在CVE-2013-4547存在的Nginx版本中，如果请求的URI中存在空格会进入如下逻辑代码中，导致没有对00截断进行检测</p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/20190314224337631.png"></p>
-<p>上面代码执行完后state=’sw_check_uri’然后继续处理URI中的剩余部分，这说明了如果空格和零截断符相邻的话ngin就不会检测到零截断并放回错误了，这时一个逻辑漏洞，所以通过这种方式我们就可以在URI中开心的使用零截断的，这就是CVE-2013-4547。</p>
-<h4 id="4、利用方式"><a href="#4、利用方式" class="headerlink" title="4、利用方式"></a>4、利用方式</h4><p>了解完上述漏洞后那么我们可以构造如下的URI触发漏洞</p>
-<p><code>http://127.0.0.1/uploads/abc.jpg[20][00].php</code></p>
-<p>nginx对上面的URI处理后将abc.jpg[20][00].php交给fastcgi处理，由于零截断fastcgi实际处理的文件为abc.jpg[00]，这个文件需要存在fastcgi才能正常处理。在Windows环境下由于命名文件时不允许文件后缀末尾存在空格所以自动将其修复为abc.jpg，这种情况下我们只需要上传一张包含代码的名字为abc.jpg的文件就可以利用漏洞了。但是在Linux情况下情况就不一样了。在Linux环境中由于允许文件后缀名最后存在空格所以我们需要确保我们传过去的文件名为abc.jpg[20]，我们可以在文件上传时使用Burpsuit在后缀名后加一个空格从而实现利用，如下图所示：<br><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122111212087.png"></p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122111600870.png"></p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122111805796.png"></p>
-<p><img src="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/image-20220122111919087.png"></p>
-<p><strong>Windows下的RCE</strong></p>
-<p>此问题在windows的攻击场景中，则从小汽车变身为变形金刚。</p>
-<p>首先，我们了解一下windows读取文件时的特点，即文件系统api创建文件名或查找文件名时，默认会去掉文件名后的空格，再执行操作.</p>
-<p>，即使我们传入参数是”a.txt ”带空格，最后访问到却确是”a.txt”不带空格</p>
-<p>此时的攻击过程为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.上传任意文件（不需要带空格文件），</span><br><span class="line">2.http://127.0.0.1/a.jpg(非编码空格)\0.php</span><br></pre></td></tr></table></figure>
-
-<p><strong>条件限制</strong></p>
-<p>还是过不了<strong>security.limit_extensions</strong>这一关。</p>
-<h4 id="5、漏洞修复"><a href="#5、漏洞修复" class="headerlink" title="5、漏洞修复"></a>5、漏洞修复</h4><p>将Nginx升级到1.5.7之后</p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124152221805.png"></p>
+<p>但/test2的location中又添加了X-Content-Type-Options头，导致父块中的add_header全部失效：</p>
+<p><img src="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/image-20220124152321752.png"></p>
 
                 
             </div>
@@ -565,7 +574,7 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://Aquan3ti.github.io/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/">https://Aquan3ti.github.io/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/</a>
+                    <a href="https://Aquan3ti.github.io/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/">https://Aquan3ti.github.io/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -782,9 +791,10 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
                 <a href="/2022/01/24/Nginx%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%AF%BC%E8%87%B4%E6%BC%8F%E6%B4%9E/">
                     <div class="card-image">
@@ -802,9 +812,9 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-24
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-24
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -817,6 +827,7 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -839,13 +850,13 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/18/Web%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B/">
+                <a href="/2022/01/18/Nginx%E6%96%87%E4%BB%B6%E5%90%8D%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E-CVE-2013-4547/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Web渗透测试流程">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="Nginx文件名逻辑漏洞|CVE_2013_4547">
                         
-                        <span class="card-title">Web渗透测试流程</span>
+                        <span class="card-title">Nginx文件名逻辑漏洞|CVE_2013_4547</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -873,8 +884,12 @@ Nginx 文件名逻辑漏洞(CVE-2013-4547) - FreeBuf网络安全行业门户
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Web%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B/">
-                        <span class="chip bg-color">Web渗透测试流程</span>
+                    <a href="/tags/Nginx%E6%BC%8F%E6%B4%9E/">
+                        <span class="chip bg-color">Nginx漏洞</span>
+                    </a>
+                    
+                    <a href="/tags/Web%E5%AE%B9%E5%99%A8%E6%BC%8F%E6%B4%9E/">
+                        <span class="chip bg-color">Web容器漏洞</span>
                     </a>
                     
                 </div>
